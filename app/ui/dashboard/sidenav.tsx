@@ -14,6 +14,7 @@ export default function SideNav() {
           <AcmeLogo />
         </div>
       </Link>
+
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
         <NavLinks />
 
@@ -23,7 +24,7 @@ export default function SideNav() {
           <button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
             <PowerIcon className="w-6" />
 
-            <div className="hidden md:block">Sign Out</div>
+            <span className="hidden md:block">Sign Out</span>
           </button>
         </form>
       </div>
