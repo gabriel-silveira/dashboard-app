@@ -110,6 +110,7 @@ export default function EditInvoiceForm(
           </div>
         </fieldset>
       </div>
+
       <div className="mt-6 flex justify-end gap-4">
         <Link
           href="/dashboard/invoices"
@@ -117,6 +118,7 @@ export default function EditInvoiceForm(
         >
           Cancel
         </Link>
+
         <Button type="submit">Edit Invoice</Button>
       </div>
     </form>
