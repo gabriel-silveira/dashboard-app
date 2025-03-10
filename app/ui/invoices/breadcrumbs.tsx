@@ -25,6 +25,7 @@ export default function Breadcrumbs({
             )}
           >
             <Link href={breadcrumb.href}>{breadcrumb.label}</Link>
+
             {index < breadcrumbs.length - 1 ? (
               <span className="mx-3 inline-block">/</span>
             ) : null}
