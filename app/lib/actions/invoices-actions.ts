@@ -2,8 +2,8 @@
 
 import {z} from 'zod';
 import postgres from "postgres";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import {revalidatePath} from "next/cache";
+import {redirect} from "next/navigation";
 
 const sql = postgres(process.env.POSTGRES_URL!, {ssl: 'require'});
 
@@ -16,6 +16,8 @@ const FormSchema = z.object({
 });
 
 const CreateInvoiceSchema = FormSchema.omit({id: true, date: true});
+
+const UpdateInvoiceSchema = FormSchema.omit({id: true, date: true});
 
 export async function createInvoice(formData: FormData) {
   const {customerId, amount, status} = CreateInvoiceSchema.parse(
@@ -30,6 +32,29 @@ export async function createInvoice(formData: FormData) {
       INSERT INTO invoices (customer_id, amount, status, date)
       VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
   `;
+
+  redirectToInvoices();
+}
+
+export async function updateInvoice(id: string, formData: FormData) {
+  const {customerId, amount, status} = UpdateInvoiceSchema.parse(
+    Object.fromEntries(new Map([...formData])),
+  );
+
+  const amountInCents = amount * 100;
+
+  await sql`
+      UPDATE invoices
+      SET customer_id = ${customerId},
+          amount      = ${amountInCents},
+          status      = ${status}
+      WHERE id = ${id}
+  `
+
+  redirectToInvoices();
+}
+
+function redirectToInvoices() {
 
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
