@@ -4,41 +4,35 @@ import {useActionState, useState} from "react";
 import Link from 'next/link';
 import {Button} from '@/app/ui/button';
 import {createInvoice, State} from "@/app/lib/actions/invoices-actions";
-import {CustomerField} from '@/app/lib/definitions';
+import {CustomerField} from '@/app/lib/definitions/general-definitions';
 import {
   CheckIcon,
   ClockIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
+import {validateForm} from "@/app/lib/validators/invoice-validator";
+import {TInvoice} from "@/app/lib/definitions/invoice-definitions";
 
 export default function Form({customers}: { customers: CustomerField[] }) {
   const initialState: State = {message: null, errors: {}};
 
   const [state, formAction, isPending] = useActionState(createInvoice, initialState);
-  const [formErrors, setFormErrors] = useState<Partial<Record<"customerId" | "amount" | "status", string>>>({});
-  const [formData, setFormData] = useState({customerId: "", amount: "", status: ""});
-
-  const validateForm = () => {
-    let errors: Partial<Record<"customerId" | "amount" | "status", string>> = {};
-
-    if (!formData.customerId) errors.customerId = "Selecione um cliente.";
-    if (!formData.amount || isNaN(Number(formData.amount)) || Number(formData.amount) <= 0) {
-      errors.amount = "Amount deve ser um número positivo.";
-    }
-    if (!formData.status) errors.status = "Escolha um status.";
-
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+  const [formErrors, setFormErrors] = useState<Partial<Record<"customer_id" | "amount" | "status", string>>>({});
+  const [formData, setFormData] = useState<TInvoice>({customer_id: "", amount: 0, status: ''});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const {name, value} = e.target;
+
     setFormData((prev) => ({...prev, [name]: value}));
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    if (!validateForm()) {
+    const validations = validateForm(formData);
+
+    if (validations.hasErrors) {
+      setFormErrors(validations.errors);
+
       e.preventDefault();
     }
   };
@@ -55,7 +49,7 @@ export default function Form({customers}: { customers: CustomerField[] }) {
           <div className="relative">
             <select
               id="customer"
-              name="customerId"
+              name="customer_id"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               defaultValue=""
               aria-describedby="customer-error"
@@ -77,7 +71,7 @@ export default function Form({customers}: { customers: CustomerField[] }) {
             />
           </div>
 
-          {formErrors.customerId && <p className="text-red-500 text-sm mt-1">{formErrors.customerId}</p>}
+          {formErrors.customer_id && <p className="text-red-500 text-sm mt-1">{formErrors.customer_id}</p>}
         </div>
 
         {/* Invoice Amount */}

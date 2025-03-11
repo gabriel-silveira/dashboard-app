@@ -2,12 +2,12 @@ import postgres from 'postgres';
 import {
   CustomerField,
   CustomersTableType,
-  InvoiceForm,
   InvoicesTable,
   LatestInvoiceRaw,
   Revenue,
-} from './definitions';
+} from './definitions/general-definitions';
 import { formatCurrency } from './utils';
+import {TInvoice} from "@/app/lib/definitions/invoice-definitions";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
@@ -141,7 +141,7 @@ export async function fetchInvoicesPages(query: string) {
 
 export async function fetchInvoiceById(id: string) {
   try {
-    const data = await sql<InvoiceForm[]>`
+    const data = await sql<TInvoice[]>`
       SELECT
         invoices.id,
         invoices.customer_id,
