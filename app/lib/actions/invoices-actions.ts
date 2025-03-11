@@ -59,6 +59,10 @@ export async function createInvoice(prevState: State, formData: FormData) {
   }
 
   redirectToInvoices();
+
+  return {
+    message: 'Invoice created successfully.',
+  };
 }
 
 export async function updateInvoice(id: string, formData: FormData) {
@@ -75,12 +79,16 @@ export async function updateInvoice(id: string, formData: FormData) {
             amount      = ${amountInCents},
             status      = ${status}
         WHERE id = ${id}
-    `
+    `;
   } catch (error) {
     console.error(error);
   }
 
   redirectToInvoices();
+
+  return {
+    message: `Invoice #${id} updated successfully.`,
+  };
 }
 
 export async function deleteInvoice(id: string) {
@@ -96,7 +104,6 @@ export async function deleteInvoice(id: string) {
 }
 
 function redirectToInvoices() {
-
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 }

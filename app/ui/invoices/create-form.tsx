@@ -1,22 +1,21 @@
 'use client';
 
-import {CustomerField} from '@/app/lib/definitions';
+import {useActionState} from "react";
 import Link from 'next/link';
+import {Button} from '@/app/ui/button';
+import {createInvoice, State} from "@/app/lib/actions/invoices-actions";
+import {CustomerField} from '@/app/lib/definitions';
 import {
   CheckIcon,
   ClockIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline';
-import {Button} from '@/app/ui/button';
-import {createInvoice, State} from "@/app/lib/actions/invoices-actions";
-import {useActionState} from "react";
 
 export default function Form({customers}: { customers: CustomerField[] }) {
   const initialState: State = {message: null, errors: {}};
 
-  // @ts-ignore
-  const [state, formAction] = useActionState(createInvoice, initialState);
+  const [state, formAction, isPending] = useActionState(createInvoice, initialState);
 
   return (
     <form action={formAction}>
