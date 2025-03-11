@@ -1,6 +1,6 @@
 'use client';
 
-import {useActionState} from "react";
+import {useActionState, useState} from "react";
 import Link from 'next/link';
 import {Button} from '@/app/ui/button';
 import {createInvoice, State} from "@/app/lib/actions/invoices-actions";
@@ -16,9 +16,35 @@ export default function Form({customers}: { customers: CustomerField[] }) {
   const initialState: State = {message: null, errors: {}};
 
   const [state, formAction, isPending] = useActionState(createInvoice, initialState);
+  const [formErrors, setFormErrors] = useState<Partial<Record<"customerId" | "amount" | "status", string>>>({});
+  const [formData, setFormData] = useState({customerId: "", amount: "", status: ""});
+
+  const validateForm = () => {
+    let errors: Partial<Record<"customerId" | "amount" | "status", string>> = {};
+
+    if (!formData.customerId) errors.customerId = "Selecione um cliente.";
+    if (!formData.amount || isNaN(Number(formData.amount)) || Number(formData.amount) <= 0) {
+      errors.amount = "Amount deve ser um número positivo.";
+    }
+    if (!formData.status) errors.status = "Escolha um status.";
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const {name, value} = e.target;
+    setFormData((prev) => ({...prev, [name]: value}));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if (!validateForm()) {
+      e.preventDefault();
+    }
+  };
 
   return (
-    <form action={formAction}>
+    <form action={formAction} onSubmit={handleSubmit}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
@@ -33,6 +59,7 @@ export default function Form({customers}: { customers: CustomerField[] }) {
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               defaultValue=""
               aria-describedby="customer-error"
+              onChange={handleChange}
             >
               <option value="" disabled>
                 Select a customer
@@ -46,17 +73,11 @@ export default function Form({customers}: { customers: CustomerField[] }) {
             </select>
 
             <UserCircleIcon
-              className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500"/>
+              className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500"
+            />
           </div>
 
-          <div id="customer-error" aria-live="polite" aria-atomic="true">
-            {state?.errors?.customerId &&
-              state.errors.customerId.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
+          {formErrors.customerId && <p className="text-red-500 text-sm mt-1">{formErrors.customerId}</p>}
         </div>
 
         {/* Invoice Amount */}
@@ -75,21 +96,16 @@ export default function Form({customers}: { customers: CustomerField[] }) {
                 placeholder="Enter USD amount"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 aria-describedby="amount-error"
+                onChange={handleChange}
               />
 
               <CurrencyDollarIcon
-                className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900"/>
+                className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900"
+              />
             </div>
           </div>
 
-          <div id="customer-error" aria-live="polite" aria-atomic="true">
-            {state?.errors?.amount &&
-              state.errors.amount.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
+          {formErrors.amount && <p className="text-red-500 text-sm mt-1">{formErrors.amount}</p>}
         </div>
 
         {/* Invoice Status */}
@@ -108,6 +124,7 @@ export default function Form({customers}: { customers: CustomerField[] }) {
                   value="pending"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                   aria-describedby="status-error"
+                  onChange={handleChange}
                 />
 
                 <label
@@ -125,6 +142,7 @@ export default function Form({customers}: { customers: CustomerField[] }) {
                   type="radio"
                   value="paid"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                  onChange={handleChange}
                 />
 
                 <label
@@ -136,14 +154,7 @@ export default function Form({customers}: { customers: CustomerField[] }) {
               </div>
             </div>
 
-            <div id="customer-error" aria-live="polite" aria-atomic="true">
-              {state?.errors?.status &&
-                state.errors.status.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))}
-            </div>
+            {formErrors.status && <p className="text-red-500 text-sm mt-1">{formErrors.status}</p>}
           </div>
         </fieldset>
       </div>
