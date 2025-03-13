@@ -11,8 +11,7 @@ import {lusitana} from '@/app/ui/fonts';
 import {IInvoiceSearchParams} from "@/app/dashboard/interfaces";
 
 export const metadata: Metadata = {
-  title: "Acme - Invoice's dashboard",
-  description: "Invoice's dashboard",
+  title: "Invoices",
 }
 
 export default async function Page(props: IInvoiceSearchParams) {

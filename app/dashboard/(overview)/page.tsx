@@ -8,8 +8,7 @@ import {CardsSkeleton, LatestInvoicesSkeleton, RevenueChartSkeleton} from "@/app
 import {lusitana} from '@/app/ui/fonts';
 
 export const metadata: Metadata = {
-  title: "Acme - Dashboard Overview",
-  description: "Dashboard Overview",
+  title: "Overview",
 }
 
 export default async function Page() {
