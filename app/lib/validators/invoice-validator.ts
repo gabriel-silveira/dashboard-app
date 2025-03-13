@@ -3,7 +3,7 @@ import {TInvoice} from "@/app/lib/definitions/invoice-definitions";
 export function validateForm(formData: TInvoice) {
   let hasErrors = false;
 
-  let errors: Partial<Record<"customer_id" | "amount" | "status", string>> = {};
+  const errors: Partial<Record<"customer_id" | "amount" | "status", string>> = {};
 
   if (!formData.customer_id) {
     errors.customer_id = "Selecione um cliente.";

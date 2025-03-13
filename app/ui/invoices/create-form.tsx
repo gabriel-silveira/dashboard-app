@@ -17,6 +17,7 @@ import {TInvoice} from "@/app/lib/definitions/invoice-definitions";
 export default function Form({customers}: { customers: CustomerField[] }) {
   const initialState: State = {message: null, errors: {}};
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [state, formAction, isPending] = useActionState(createInvoice, initialState);
   const [formErrors, setFormErrors] = useState<Partial<Record<"customer_id" | "amount" | "status", string>>>({});
   const [formData, setFormData] = useState<TInvoice>({customer_id: "", amount: 0, status: ''});

@@ -22,6 +22,7 @@ export default function EditInvoiceForm(
 
   const updateInvoiceWithId = updateInvoice.bind(null, invoice.id || 0);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [state, formAction, isPending] = useActionState(updateInvoiceWithId, initialState);
   const [formErrors, setFormErrors] = useState<Partial<Record<"customer_id" | "amount" | "status", string>>>({});
   const [formData, setFormData] = useState({...invoice});
